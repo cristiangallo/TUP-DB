@@ -182,10 +182,15 @@ GROUP BY CON.nro_contrato;
 
 
 -- 11) Cantidad de solicitudes por empresas.
-
+SELECT E.cuit, E.razon_social, count(*) as "cant. solicitudes" 
+from solicitudes_empresas SE INNER JOIN empresas E on SE.cuit=E.cuit 
+GROUP BY SE.cuit;
 
 -- 12) Cantidad de solicitudes por empresas y cargos.
-
+SELECT E.cuit, E.razon_social, SE.cod_cargo, count(*) as "cant. solicitudes" 
+from solicitudes_empresas SE INNER JOIN empresas E on SE.cuit=E.cuit 
+INNER JOIN cargos C ON SE.cod_cargo=C.cod_cargo
+GROUP BY SE.cuit, SE.cod_cargo;
 
 -- LEFT/RIGHT JOIN
 -- 13) Listar las empresas, indicando todos sus datos y la cantidad de personas diferentes
@@ -199,4 +204,7 @@ GROUP BY CON.nro_contrato;
 
 
 -- 15) Indicar los cargos que hayan sido solicitados menos de 2 veces
-
+SELECT C.cod_cargo, C.desc_cargo, count(*) as "cant. solicitudes" 
+from cargos C
+LEFT JOIN solicitudes_empresas SE ON SE.cod_cargo=C.cod_cargo=SE.cod_cargo
+GROUP BY C.cod_cargo;
