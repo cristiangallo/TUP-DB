@@ -11,6 +11,18 @@
 -- Práctica Complementaria: 3 – 4 – 5 – 8 –9 – 13
 -- BASE DE DATOS: AGENCIA_PERSONAL
 
+
+-- 6) Empleados que no tengan referencias o hayan puesto de referencia a Armando
+-- Esteban Quito o Felipe Rojas. Mostrarlos de la siguiente forma:
+-- Pérez, Juan tiene como referencia a Felipe Rojas cuando trabajo en Constructora Gaia
+-- S.A
+SELECT DISTINCT CONCAT(P.apellido, " ", P.nombre, " ", 
+IFNULL(CONCAT("tiene como referencia a ", A.persona_contacto), CONCAT("no tiene referencias")), 
+" cuando trabajó en ", UPPER(E.razon_social)) as texto
+from personas P INNER JOIN antecedentes A ON P.dni=A.dni
+INNER JOIN empresas E ON A.cuit=E.cuit
+WHERE A.persona_contacto IN ("Armando Esteban Quito", "Felipe Rojas") or A.persona_contacto IS NULL;
+
 -- 9) Mostrar todas las evaluaciones realizadas para cada solicitud ordenar en forma
 -- ascendente por empresa y descendente por cargo:
 SELECT EMPRE.razon_social, CAR.desc_cargo, EVAL.desc_evaluacion, EE.resultado 
