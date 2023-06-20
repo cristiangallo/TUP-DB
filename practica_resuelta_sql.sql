@@ -12,6 +12,14 @@
 -- BASE DE DATOS: AGENCIA_PERSONAL
 
 
+-- 3) Listado de las solicitudes consignando razon social, direccion y e_mail de la
+-- empresa, descripcion del cargo solicitado y años de experiencia solicitados, ordenado por
+-- fecha de solicitud y descripción de cargo.asdasdasdsada dfsfsd fsdf sdfsdf sdf sdf 
+SELECT razon_social, direccion, e_mail, desc_cargo, anios_experiencia FROM 
+empresas E INNER JOIN solicitudes_empresas SE ON E.cuit=SE.cuit
+INNER JOIN cargos CA ON SE.cod_cargo=CA.cod_cargo
+ORDER BY fecha_solicitud, desc_cargo;
+
 -- 6) Empleados que no tengan referencias o hayan puesto de referencia a Armando
 -- Esteban Quito o Felipe Rojas. Mostrarlos de la siguiente forma:
 -- Pérez, Juan tiene como referencia a Felipe Rojas cuando trabajo en Constructora Gaia
@@ -22,6 +30,11 @@ IFNULL(CONCAT("tiene como referencia a ", A.persona_contacto), CONCAT("no tiene 
 from personas P INNER JOIN antecedentes A ON P.dni=A.dni
 INNER JOIN empresas E ON A.cuit=E.cuit
 WHERE A.persona_contacto IN ("Armando Esteban Quito", "Felipe Rojas") or A.persona_contacto IS NULL;
+
+-- 8) Mostrar los antecedentes de cada postulante: 
+SELECT CONCAT(nombre, apellido) as "Postulante", desc_cargo as "Cargo" FROM
+personas P INNER JOIN antecedentes A ON P.dni=A.dni
+INNER JOIN cargos C ON A.cod_cargo=C.cod_cargo;
 
 -- 9) Mostrar todas las evaluaciones realizadas para cada solicitud ordenar en forma
 -- ascendente por empresa y descendente por cargo:
@@ -44,9 +57,21 @@ LEFT JOIN cargos CAR ON SOL.cod_cargo=CAR.cod_cargo;
 
 -- 11) Mostrar para todas las solicitudes la razón social de la empresa solicitante, el cargo
 -- y si se hubiese realizado un contrato los datos de la(s) persona(s).
+SELECT E.cuit, razon_social, desc_cargo, PER.dni, apellido, nombre FROM 
+empresas E INNER JOIN solicitudes_empresas SE ON E.cuit=SE.cuit
+INNER JOIN cargos CA ON SE.cod_cargo=CA.cod_cargo
+LEFT JOIN contratos CON ON SE.cuit=CON.cuit and SE.cod_cargo=CON.cod_cargo and SE.fecha_solicitud=CON.fecha_solicitud
+LEFT JOIN personas PER ON CON.dni=PER.dni;
 
 -- 12) Mostrar para todas las solicitudes la razón social de la empresa solicitante, el cargo de
 -- las solicitudes para las cuales no se haya realizado un contrato.
+SELECT E.cuit, razon_social, CA.desc_cargo FROM 
+solicitudes_empresas SE 
+INNER JOIN empresas E ON E.cuit=SE.cuit
+INNER JOIN cargos CA ON SE.cod_cargo=CA.cod_cargo
+LEFT JOIN  contratos C ON C.cuit=SE.cuit and C.cod_cargo=SE.cod_cargo
+WHERE nro_contrato IS NULL;
+
 
 -- 13) Listar todos los cargos y para aquellos que hayan sido realizados (como
 -- antecedente) por alguna persona indicar nombre y apellido de la persona y empresa donde
