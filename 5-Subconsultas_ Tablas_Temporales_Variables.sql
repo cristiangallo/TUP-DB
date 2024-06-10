@@ -25,6 +25,11 @@ INNER JOIN `personas` PER on PER.dni=CON.dni
 where COM.fecha_pago is not null and 
 COM.importe_comision < (SELECT AVG(importe_comision) FROM `comisiones`);
 
-
-
+-- 5) Determinar las empresas que pagaron más que el promedio
+SELECT EMP.razon_social, AVG(COM.importe_comision) 
+from `contratos` CON
+INNER JOIN `comisiones`COM ON CON.nro_contrato=COM.nro_contrato
+INNER JOIN `empresas` EMP on CON.cuit=EMP.cuit 
+GROUP BY EMP.cuit
+HAVING AVG(COM.importe_comision) > (SELECT AVG(importe_comision) FROM `comisiones`);
 
